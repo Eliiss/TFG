@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riesgo de Incendio Forestal</title>
+    <!-- Cargamos el CSS de Leaflet (Los mapas) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Panel Izquierdo: El Mapa -->
+        <div class="left-panel">
+            <div id="map"></div>
+        </div>
+
+        <!-- Panel Derecho: Los Resultados -->
+        <div class="right-panel">
+            <h2>📡</h2>
+            <p>Sistema de Alerta Temprana</p>
+            <hr>
+            <h3>Provincia Seleccionada:</h3>
+            <div id="provincia-nombre" class="box-info">Haz clic en el mapa...</div>
+
+            <h3>Probabilidad de Incendio:</h3>
+            <div id="resultado-riesgo" class="box-info">-- %</div>
+
+            <div id="mensaje-estado" class="estado">Esperando selección...</div>
+        </div>
+    </div>
+
+    <!-- Cargamos el JS de Leaflet y nuestro código -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js?v=tiles-osm-2"></script>
+</body>
+</html>
