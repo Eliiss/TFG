@@ -24,6 +24,12 @@ function esperar(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function formatearFechaISO(fechaISO) {
+    if (!fechaISO) return "No disponible";
+    const [year, month, day] = fechaISO.split("-");
+    return `${day}/${month}/${year}`;
+}
+
 async function fetchJsonConTimeout(url, options = {}, timeoutMs = API_TIMEOUT_MS) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -72,7 +78,7 @@ async function obtenerDatosMeteo(lat, lon) {
     const daily = data.daily;
     const n = daily.time.length;
 
-    // Valores del día más reciente con datos completos
+    // Valores del día de predicción devuelto por Open-Meteo
     const prec      = daily.precipitation_sum[n - 1] ?? 0;
     const tmin      = daily.temperature_2m_min[n - 1] ?? 15;
     const tmax      = daily.temperature_2m_max[n - 1] ?? 30;
@@ -81,6 +87,9 @@ async function obtenerDatosMeteo(lat, lon) {
     // Histórico de los 14 días previos para las ventanas temporales
     const precHist = daily.precipitation_sum.slice(0, n - 1).map(v => v ?? 0);
     const tmaxHist = daily.temperature_2m_max.slice(0, n - 1).map(v => v ?? 25);
+    const fechaPrediccion = daily.time[n - 1];
+    const inicioHistorico = daily.time[Math.max(0, n - 15)];
+    const finHistorico = daily.time[n - 2];
 
     const sum = (arr, d) => arr.slice(-d).reduce((a, b) => a + b, 0);
     const avg = (arr, d) => sum(arr, d) / d;
@@ -97,6 +106,8 @@ async function obtenerDatosMeteo(lat, lon) {
         // SAR (Sentinel-1): no disponible en tiempo real → valores representativos de verano seco
         VV_dB: -12.5, VH_dB: -18.0, VH_VV_Ratio: -5.5,
         dry_streak,
+        fecha_prediccion: fechaPrediccion,
+        periodo_historico: `${formatearFechaISO(inicioHistorico)} - ${formatearFechaISO(finHistorico)}`,
         // En entrenamiento se usaron medias móviles para precipitación y temperatura.
         prec_roll3:  avg(precHist, 3),  tmax_roll3:  avg(tmaxHist, 3),
         prec_roll7:  avg(precHist, 7),  tmax_roll7:  avg(tmaxHist, 7),
@@ -107,13 +118,16 @@ async function obtenerDatosMeteo(lat, lon) {
 // 5. Llamada a AWS Lambda con datos reales por provincia
 async function consultarRiesgoAWS(provinciaNombre, capaPoligono) {
     document.getElementById('resultado-riesgo').innerText = "Calculando...";
+    document.getElementById('fecha-prediccion').innerText = "Consultando...";
+    document.getElementById('periodo-datos').innerText = "Histórico meteorológico: --";
     document.getElementById('mensaje-estado').innerText = "Obteniendo datos meteorológicos...";
     document.getElementById('mensaje-estado').style.backgroundColor = "#444";
 
     try {
         // Obtener centroide de la provincia a partir del polígono
         const center = capaPoligono.getBounds().getCenter();
-        const payload = await obtenerDatosMeteo(center.lat, center.lng);
+        const datosMeteo = await obtenerDatosMeteo(center.lat, center.lng);
+        const { fecha_prediccion, periodo_historico, ...payload } = datosMeteo;
         payload.provincia = provinciaNombre;
 
         let datos = null;
@@ -153,6 +167,8 @@ async function consultarRiesgoAWS(provinciaNombre, capaPoligono) {
         // Actualizamos la Interfaz
         document.getElementById('resultado-riesgo').innerText = porcentajeRiesgo.toFixed(1) + "%";
         document.getElementById('resultado-riesgo').style.color = getColor(porcentajeRiesgo);
+        document.getElementById('fecha-prediccion').innerText = formatearFechaISO(fecha_prediccion);
+        document.getElementById('periodo-datos').innerText = `Histórico meteorológico usado: ${periodo_historico}`;
         
         // Coloreamos la provincia en el mapa
         capaPoligono.setStyle({
@@ -168,6 +184,8 @@ async function consultarRiesgoAWS(provinciaNombre, capaPoligono) {
     } catch (error) {
         console.error("Error en la petición a AWS:", error);
         document.getElementById('resultado-riesgo').innerText = "ERROR";
+        document.getElementById('fecha-prediccion').innerText = "No disponible";
+        document.getElementById('periodo-datos').innerText = "Histórico meteorológico: --";
         const detalle = error && error.message ? String(error.message).slice(0, 120) : "Error no identificado";
         document.getElementById('mensaje-estado').innerText = `Fallo de conexión/API: ${detalle}`;
     }

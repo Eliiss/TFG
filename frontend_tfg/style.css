@@ -4,9 +4,13 @@ body {
     background-color: #1e1e1e;
     color: white;
 }
+* {
+    box-sizing: border-box;
+}
 .container {
     display: flex;
     height: 100vh;
+    overflow: hidden;
 }
 .left-panel {
     flex: 3;
@@ -19,18 +23,44 @@ body {
 }
 .right-panel {
     flex: 1;
-    padding: 30px;
+    padding: 22px 30px;
     background-color: #2d2d2d;
     border-left: 2px solid #444;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+}
+.right-panel h2 {
+    margin: 0 0 8px;
+}
+.right-panel p {
+    margin: 0 0 14px;
+}
+.right-panel hr {
+    width: 100%;
+    margin: 0 0 16px;
+}
+.right-panel h3 {
+    margin: 0 0 10px;
 }
 .box-info {
     background-color: #3d3d3d;
-    padding: 15px;
+    padding: 13px 15px;
     border-radius: 8px;
     font-size: 24px;
     font-weight: bold;
+    text-align: center;
+    margin-bottom: 18px;
+}
+.box-fecha {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+.periodo-datos {
+    color: #cfcfcf;
+    font-size: 14px;
+    line-height: 1.4;
     text-align: center;
     margin-bottom: 20px;
 }

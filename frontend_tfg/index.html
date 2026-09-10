@@ -6,7 +6,7 @@
     <title>Riesgo de Incendio Forestal</title>
     <!-- Cargamos el CSS de Leaflet (Los mapas) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=date-info-1" />
 </head>
 <body>
     <div class="container">
@@ -26,12 +26,16 @@
             <h3>Probabilidad de Incendio:</h3>
             <div id="resultado-riesgo" class="box-info">-- %</div>
 
+            <h3>Fecha de la predicción:</h3>
+            <div id="fecha-prediccion" class="box-info box-fecha">Sin selección</div>
+            <div id="periodo-datos" class="periodo-datos">Histórico meteorológico: --</div>
+
             <div id="mensaje-estado" class="estado">Esperando selección...</div>
         </div>
     </div>
 
     <!-- Cargamos el JS de Leaflet y nuestro código -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="app.js?v=tiles-osm-2"></script>
+    <script src="app.js?v=date-info-1"></script>
 </body>
 </html>
