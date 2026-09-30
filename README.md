@@ -71,16 +71,14 @@ The demo obtains recent meteorological data from [Open-Meteo](https://open-meteo
 
 ```text
 .
-├── 01_etl_aemet_miteco.py       # Construction of the labeled meteorological dataset
-├── 02_copernicus_download.py    # Download and transformation of Sentinel-1
-├── cruce.py                     # Fusion of meteorological and satellite information
-├── 04_quality_check.py          # Quality control and final filtering
-├── 05_feature_engineering.py    # Temporal variables for the model
-├── 06_train.py                 # Training, evaluation, and export
-├── dataset_TFG_VIYA_READY_CLEAN.csv
-├── datos_base.csv
-├── modelo_gradient_boosting.pkl
-├── columnas_modelo.pkl
+├──
+└── backend
+    ├── 01_etl_aemet_miteco.py       # Construction of the labeled meteorological dataset
+    ├── 02_copernicus_download.py    # Download and transformation of Sentinel-1
+    ├── cruce.py                     # Fusion of meteorological and satellite information
+    ├── 04_quality_check.py          # Quality control and final filtering
+    ├── 05_feature_engineering.py    # Temporal variables for the model
+    ├── 06_train.py                 # Training, evaluation, and export
 ├── frontend_tfg/               # Web interface with Leaflet
 └── lambda_container/           # Container for AWS Lambda
 ```
@@ -271,20 +269,17 @@ La demo obtiene la meteorología reciente desde [Open-Meteo](https://open-meteo.
 
 ```text
 .
-├── 01_etl_aemet_miteco.py       # Construcción del dataset meteorológico etiquetado
-├── 02_copernicus_download.py    # Descarga y transformación de Sentinel-1
-├── cruce.py                     # Fusión de meteorología e información satelital
-├── 04_quality_check.py          # Control de calidad y filtrado final
-├── 05_feature_engineering.py    # Variables temporales para el modelo
-├── 06_train.py                  # Entrenamiento, evaluación y exportación
-├── dataset_TFG_VIYA_READY_CLEAN.csv
-├── datos_base.csv
-├── modelo_gradient_boosting.pkl
-├── columnas_modelo.pkl
-├── frontend_tfg/                # Interfaz web con Leaflet
-└── lambda_container/             # Contenedor para AWS Lambda
+├──
+└── backend
+    ├── 01_etl_aemet_miteco.py       # Construcción del dataset meteorológico etiquetado
+    ├── 02_copernicus_download.py    # Descarga y transformación de Sentinel-1
+    ├── cruce.py                     # Fusión de meteorología e información satelital
+    ├── 04_quality_check.py          # Control de calidad y filtrado final
+    ├── 05_feature_engineering.py    # Variables temporales para el modelo
+    ├── 06_train.py                  # Entrenamiento, evaluación y exportación
+├── frontend_tfg/               # Interfaz web con Leaflet
+└── lambda_container/           # Contenedor para AWS Lambda
 ```
-
 ## Instalación y uso local
 
 ### 1. Preparar el entorno
