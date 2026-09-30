@@ -2,7 +2,7 @@
 
 > Interfaz Visual https://eliiss.github.io/TFG/frontend_tfg/
 
-Sistema end-to-end de análisis y predicción de incendios forestales en España que combina datos meteorológicos, registros históricos de incendios y observación terrestre mediante Sentinel-1. El resultado es una herramienta de apoyo a la decisión que muestra el riesgo estimado por provincia en un mapa interactivo.
+Sistema end-to-end de análisis y predicción de incendios forestales en España que combina datos meteorológicos, registros históricos de incendios y observación terrestre mediante Sentinel-1.
 
 ![Vista conceptual del sistema](https://img.shields.io/badge/TFG-IA%20%7C%20Datos%20%7C%20Cloud-1f6feb?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
@@ -11,9 +11,9 @@ Sistema end-to-end de análisis y predicción de incendios forestales en España
 
 ## El proyecto en una mirada
 
-Los incendios forestales dependen de la interacción entre condiciones meteorológicas, sequedad acumulada y estado de la vegetación. Este proyecto transforma esas señales en una probabilidad de incendio para una provincia y una fecha determinadas.
+Los incendios forestales dependen de la interacción entre condiciones meteorológicas, sequedad acumulada y estado de la vegetación. Este proyecto transforma esas señales en una probabilidad de riesgo de incendio para apoyar la toma de decisiones de forma proactiva.
 
-**La idea central:** integrar datos heterogéneos, construir variables temporales sin fuga de información, entrenar un modelo para un problema desbalanceado y poner la inferencia a disposición de una interfaz geográfica sencilla.
+**La idea central:** integrar datos heterogéneos, construir variables temporales sin fuga de información, entrenar un modelo para un problema desbalanceado y poner la inferencia a disposición de una interfaz web y una API serverless.
 
 ### Resultados destacados
 
@@ -52,7 +52,7 @@ flowchart LR
 1. **ETL meteorológico e histórico:** se limpian y agregan los datos de AEMET por provincia y fecha, y se etiquetan los días con incendios registrados por MITECO.
 2. **Observación satelital:** se consultan imágenes radar Sentinel-1 a través de Copernicus Data Space Ecosystem y se calculan las señales `VV`, `VH` y el ratio `VH/VV`.
 3. **Fusión:** se unen las fuentes meteorológica y satelital por provincia y fecha, imputando los pasos sin observación mediante el último valor disponible.
-4. **Ingeniería de características:** se calculan la racha seca y medias móviles de precipitación y temperatura para ventanas de 3, 7 y 14 días. Las ventanas usan únicamente información previa mediante `shift(1)`.
+4. **Ingeniería de características:** se calculan la racha seca y medias móviles de precipitación y temperatura para ventanas de 3, 7 y 14 días. Las ventanas usan únicamente información previa a la fecha objetivo para evitar fugas de información.
 5. **Entrenamiento:** XGBoost aprende a distinguir días con y sin incendio. `scale_pos_weight` compensa el desbalanceo de clases sin generar observaciones sintéticas.
 6. **Inferencia:** Lambda descarga el modelo desde S3, recibe las variables por HTTP y devuelve la probabilidad estimada.
 
@@ -65,7 +65,7 @@ La interfaz permite seleccionar una provincia sobre un mapa de España y consult
 - Naranja: alerta, entre el 50% y el 75%.
 - Rojo: riesgo alto, 75% o más.
 
-La demo obtiene la meteorología reciente desde [Open-Meteo](https://open-meteo.com/). Para mantener la experiencia interactiva, la versión web utiliza valores representativos para las variables Sentinel-1; el pipeline de entrenamiento sí incorpora las observaciones satelitales descargadas desde Copernicus.
+La demo obtiene la meteorología reciente desde [Open-Meteo](https://open-meteo.com/). Para mantener la experiencia interactiva, la versión web utiliza valores representativos para las variables necesarias del modelo.
 
 ## Estructura del repositorio
 
@@ -133,7 +133,7 @@ cd frontend_tfg
 .\start_server.ps1
 ```
 
-Después, abre [http://localhost:8080](http://localhost:8080). La URL de API configurada en `frontend_tfg/app.js` apunta a la API desplegada en AWS; para utilizar otra, sustituye `API_URL` por tu endpoint de API Gateway.
+Después, abre [http://localhost:8080](http://localhost:8080). La URL de API configurada en `frontend_tfg/app.js` apunta a la API desplegada en AWS; para utilizar otra, sustituye `API_URL` por tu valor deseado.
 
 ## Despliegue serverless
 
@@ -191,7 +191,8 @@ Respuesta:
 
 ## Autor
 
-**Elizabeth**  
+**Elizabeth**
+
 Trabajo de Fin de Grado sobre predicción de riesgo de incendios forestales mediante inteligencia artificial, datos satelitales y arquitectura cloud.
 
 Si este proyecto te resulta útil o quieres conocer más detalles técnicos, puedes abrir una issue o contactar conmigo a través de mi perfil de GitHub.
