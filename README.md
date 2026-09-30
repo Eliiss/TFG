@@ -1,6 +1,3 @@
-Here is the English version in Markdown, ready to paste into your README:
-
-```markdown
 # Forest Fire Risk Prediction System
 
 > Visual Interface: https://eliiss.github.io/TFG/frontend_tfg/
